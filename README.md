@@ -1,0 +1,2 @@
+# FinansApp
+E-MAĞAZA OTOMASYON SİSTEMİ
