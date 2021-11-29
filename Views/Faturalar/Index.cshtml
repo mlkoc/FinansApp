@@ -1,0 +1,65 @@
+﻿@model IEnumerable<FinansApp.Models.Faturalar>
+@{
+    ViewBag.Title = "Faturalar";
+}
+
+
+
+<div>
+    <h3>Arama</h3>
+    <hr />
+    <div class="col-md-12">
+        <div class="col-md-2">
+            <a class="btn btn-primary" onclick="git()"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Bul&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </a>
+        </div>
+        <div class="col-md-6">
+            <input type="text" value="@TempData["adi"]" class="form-control" placeholder="Ad Soyad giriniz" id="adi" name="adi" />
+        </div>
+
+    </div>
+</div>
+<br />
+<h2>
+    Faturalar
+    @if (TempData["AdiSoyadi"] != null)
+    {
+        @("("+TempData["AdiSoyadi"]+")")
+    }
+</h2>
+<hr />
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">No</th>
+            <th scope="col">Adı Soyadı</th>
+            <th scope="col">Tarih</th>
+            <th scope="col">Tutar</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int i = 1;
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td scope="row">@(i++)</td>
+                <td>@item.Satislar.Musteriler.AdiSoyadi</td>
+                <td>@item.Tarih.Value.ToString("dd.MM.yyyy")</td>
+                <td>@(item.Tutar.Value.ToString()+" ₺")</td>
+                <td>@Html.ActionLink("Detay", "FaturaDetay", new { id = item.Id })</td>
+                <td>@Html.ActionLink("Sil", "Sil", new { id = item.Id })</td>
+            </tr>
+        }
+
+
+    </tbody>
+</table>
+<script type="text/javascript">
+    function git() {
+        window.location = "/Faturalar/Index?adi=" + $("#adi").val();
+    }
+</script>
+

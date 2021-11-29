@@ -1,0 +1,98 @@
+﻿
+@model IEnumerable<FinansApp.Models.UrunSatis>
+@{
+    ViewBag.Title = "Satış Detayı";
+}
+@{
+    int i = 1;
+    decimal toplamTutar = 0;
+    int satId = Convert.ToInt32(TempData["SatisId"]);
+    //decimal odenen = Convert.ToDecimal(ViewData["Odenen"]);
+    toplamTutar = Model.Where(x => x.SatisId == satId).Sum(x => x.AraToplam).Value;
+}
+<h2>
+    Fatura
+
+</h2>
+<h3>
+    <b>
+        Müsteri Adı :
+    </b>
+    @if (TempData["AdiSoyadi"] != null)
+    {
+        @(TempData["AdiSoyadi"])
+    }
+</h3>
+<h3>
+    <b>
+        Tarih :
+    </b>
+    @if (Model.Count() > 0)
+    {
+        @(Model.First().Satislar.Tarih.Value.ToString("dd.MM.yyyy"))
+    }
+</h3>
+
+<br />
+
+@*@Html.ActionLink("Yeni Kayıt", "Kayit", new { MusteriId = ViewData["MusteriId"] }, new { @class = "btn btn-primary" })*@
+<br />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">No</th>
+            <th scope="col">Ürün Adı</th>
+            <th scope="col">Adet</th>
+            <th scope="col">Birim Fiyat</th>
+            <th scope="col">Ara Toplam</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td scope="row">@(i++)</td>
+                <td>@item.Urunler.Ad</td>
+                <td>@item.Adet</td>
+                <td>@(item.Urunler.Fiyat.Value.ToString() + " ₺")</td>
+                <td>@((item.Urunler.Fiyat.Value * item.Adet).ToString() + " ₺")</td>
+                
+            </tr>
+        }
+        <tr>
+            <td scope="row"></td>
+            <td></td>
+            <td></td>
+            <td><b>TOPLAM TUTAR:</b></td>
+            <td> <b>@(toplamTutar.ToString()+" ₺") </b></td>
+            @*<td>@Html.ActionLink("Düzenle", "SatisYap", new { id = item.Id })</td>*@
+            <td></td>
+            <td></td>
+
+        </tr>
+
+    </tbody>
+</table>
+
+
+
+
+<div>
+    @if (Model.Count() > 0)
+    {
+        @Html.ActionLink("Tüm Faturalar", "Index", new { MusteriId = Model.FirstOrDefault().Satislar.MusteriId })
+    }
+    else
+    {
+        @Html.ActionLink("Tüm Faturalar", "Index")
+    }
+
+</div>
+
+
+
+
+

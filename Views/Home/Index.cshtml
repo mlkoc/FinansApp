@@ -1,0 +1,469 @@
+﻿<div class="jumbotron">
+    <h1>Finans App</h1>
+    <p class="lead">Api Kullanımı</p>
+    <p></p>
+</div>
+<div class="row">
+    <div class="col-md-12">
+
+        <a class="btn btn-default" onclick="GetToken()">Token Al</a>
+        <hr />
+        <div class="col-md-12" id="textToken">
+
+        </div>
+        <pre>
+        <code>
+                function GetToken() {
+                $.ajax({
+                url: "https://localhost:44360/token",
+                type: "POST",
+                headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Accept": "application/json"
+                },
+                data: {
+                "grant_type": "password",
+                "username": "1",
+                "password":"1"
+                },
+                error: function (err) {
+                console.log(err);
+
+                },
+                success: function (data) {
+                console.log(data.access_token);
+                token = data.access_token;
+
+                }
+                });
+                }
+            </code>
+         </pre>
+
+        <hr />
+        <div class="col-md-12">
+            <div class="col-md-2">
+                <a class="btn btn-default" onclick="getMusteriler()">Bütün Müşterileri Getir</a>
+            </div>
+            <div class="col-md-6">
+                <input type="text" id="adi" class="form-control" placeholder="Müsteri adı ve soyadı" />
+            </div>
+        </div>
+        <hr />
+        <pre>
+        <code>
+                function getMusteriler() {
+                $.ajax({
+                url: "https://localhost:44360/api/ApiMusteriler/GetMusterilerByAdi",
+                type: "Post",
+                headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": "bearer " + token
+                },
+                data: {
+                "adi": $("#adi").val(),
+                },
+                error: function (err) {
+                console.log(err);
+
+                },
+                success: function (data) {
+                console.log(data);
+                $("#textMusteriler").html(JSON.stringify(data, null, 2));
+
+                }
+                });
+                }
+            </code>
+         </pre>
+        <hr />
+        <div class="col-md-12" id="textMusteriler">
+
+        </div>
+
+
+    </div>
+
+</div>
+<script type="text/javascript">
+    var token;
+    function getMusteriler() {
+        $.ajax({
+            //url: "https://localhost:44360/token",https://api.genelpara.com/embed/para-birimleri.json
+            url: "https://localhost:44360/api/ApiMusteriler/GetMusterilerByAdi",
+            type: "Post",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": "bearer " + token
+            },
+            data: {
+                "adi": $("#adi").val(),
+            },
+            error: function (err) {
+                console.log(err);
+
+            },
+            success: function (data) {
+                console.log(data);
+                $("#textMusteriler").html(JSON.stringify(data, null, 2));
+
+            }
+        });
+    }
+    function Register() {
+        $.ajax({
+            //url: "https://localhost:44360/token",
+            url: "https://localhost:44360/api/user/Register",
+            type: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Accept": "application/json"
+            },
+            data: {
+                "Id": "2",
+                "IsActive": "True",
+                "RegisterDate": "01.01.2000",
+                "UserExpireDate": "01.01.2000",
+                "IsActive": "False",
+
+                "Mail": "dsfösdöf",
+                "Password": "12323",
+                "MacId": "111",
+                "CellPhone": "0555 868869"
+            },
+            error: function (err) {
+                console.log(err);
+
+            },
+            success: function (data) {
+                console.log(data);
+
+            }
+        });
+    }
+    function GetToken() {
+        $.ajax({
+            url: "https://localhost:44360/token",
+            type: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Accept": "application/json"
+            },
+            data: {
+                "grant_type": "password",
+                "username": "1",
+                "password": "1"
+            },
+            error: function (err) {
+                console.log(err);
+
+            },
+            success: function (data) {
+                console.log(data.access_token);
+                $("#textToken").html(data.access_token);
+                token = data.access_token;
+
+            }
+        });
+    }
+    function Getir() {
+        $.ajax({
+            url: "https://localhost:44380/Api/Urunler",
+            type: "Post",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": "bearer " + token
+            },
+            data: {
+                "Id": 2,
+                "Aciklama": "Patlıcan Kebap",
+                "AktifMi": true,
+                "Fiyat": 45.5,
+                "Foto": null,
+                "FotoAlbumId": null,
+                "KategoriId": 1,
+                "UrunAdi": "Patlıcan Kebap"
+
+            },
+            error: function (err) {
+                console.log(err);
+
+            },
+            success: function (data) {
+                console.log(data);
+
+
+            }
+        });
+    }
+    function urunGetirTumu() {
+        $.ajax({
+            url: "https://localhost:44380/Api/Urunler/TumUrunlerListe",
+            type: "Get",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": "bearer " + token
+            },
+
+            error: function (err) {
+                console.log(err);
+
+            },
+            success: function (data) {
+                console.log(data);
+
+
+            }
+        });
+    }
+    function dosyaYukle1() {
+
+        var file = document.getElementById("imageFile").files[0];
+        //var that = this;
+        var formData = new FormData();
+
+        // add assoc key values, this will be posts values
+        formData.append("file", file, file.name);
+        formData.append("upload_file", true);
+        formData.append("Content-Type", "application/x-www-form-urlencoded");
+        formData.append("Authorization", "bearer " + token);
+        //console.log("geldi");
+        //$.ajax({
+        //    type: "POST",
+        //    url: "https://localhost:44380/Api/FilesUpload/StreamUpload",
+        //    headers: {
+        //        "Content-Type": "application/x-www-form-urlencoded",
+        //        "Authorization": "bearer " + token
+        //    },
+        //    //xhr: function () {
+        //    //    var myXhr = $.ajaxSettings.xhr();
+        //    //    if (myXhr.upload) {
+        //    //        myXhr.upload.addEventListener('progress', that.progressHandling, false);
+        //    //    }
+        //    //    myXhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        //    //    myXhr.setRequestHeader("Authorization", "bearer " + token);
+        //    //    return myXhr;
+        //    //},
+        //    success: function (data) {
+        //        //your callback here
+        //    },
+        //    error: function (error) {
+        //        //handle error
+        //    },
+        //    async: true,
+        //    data: formData,
+        //    cache: false,
+        //    contentType: false,
+        //    processData: false,
+        //    timeout: 60000
+        //});
+        //console.log("bitti");
+
+        var xhr = new XMLHttpRequest();
+        xhr.file = file; // not necessary if you create scopes like this
+        xhr.addEventListener('progress', function (e) {
+            var done = e.position || e.loaded, total = e.totalSize || e.total;
+            console.log('xhr progress: ' + (Math.floor(done / total * 1000) / 10) + '%');
+        }, false);
+        if (xhr.upload) {
+            xhr.upload.onprogress = function (e) {
+                var done = e.position || e.loaded, total = e.totalSize || e.total;
+                console.log('xhr.upload progress: ' + done + ' / ' + total + ' = ' + (Math.floor(done / total * 1000) / 10) + '%');
+            };
+        }
+        xhr.onreadystatechange = function (e) {
+            if (4 == this.readyState) {
+                console.log(['xhr upload complete', e]);
+            }
+        };
+        xhr.open("post", "/Api/FilesUpload/StreamUpload", false);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader("Authorization", "bearer " + token);
+        xhr.send(formData);
+
+
+
+
+
+        // var file = document.getElementById("imageFile").files[0];
+        // let req = new XMLHttpRequest();
+        // let formData = new FormData();
+
+        //// formData.append("photo", photo);
+        // req.open("POST", 'https://localhost:44380/Api/FilesUpload');
+        // req.send(formData);
+        //var r = new FileReader();
+        //r.onloadend = function (e) {
+
+
+        //    var arr = Array.from(new Uint8Array(e.target.result));
+
+        //    var uploadData = {
+        //        Name: "Name of Image",
+        //        Bytes: arr
+        //    }
+        //    console.log(uploadData);
+
+        //    $http.post('api/Uploader/UploadImage', uploadData)
+        //        .then(
+        //            function (response) {
+        //                console.log(response);
+        //            },
+
+        //            function (reason) {
+
+        //                console.log(reason);
+        //            })
+        //}
+        //r.readAsArrayBuffer(file);
+    }
+    function dosyaYukle() {
+
+        var file = document.getElementById("imageFile").files[0];
+        var reader = new FileReader();
+        var binaryString;
+        var strByte = "";
+        var jsonObj = new Array();
+        reader.onload = function () {
+
+            var arrayBuffer = this.result,
+                array = new Uint8Array(arrayBuffer),
+                binaryString = String.fromCharCode.apply(null, array);
+            jsonObj.push({ Content: binaryString, Name: file.name });
+            console.log(jsonObj);
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Authorization": "bearer " + token
+                },
+                contentType: "application/json; charset=utf-8",
+                url: "https://localhost:44380/Api/FilesUpload/StreamUploadByteArrList",
+
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (error) {
+                    // handle error
+                },
+                async: true,
+                data: { fileList: JSON.stringify(jsonObj) },
+                cache: false,
+                contentType: false,
+                processData: false,
+                timeout: 60000
+            });
+
+
+        }
+        reader.readAsArrayBuffer(file);
+    }
+    function dosyaYukleTekli() {
+
+        var file = document.getElementById("imageFile").files[0];
+        var reader = new FileReader();
+        var binaryString;
+        var strByte = "";
+        var jsonObj = "";
+        reader.onload = function () {
+
+            var arrayBuffer = this.result,
+                array = new Uint8Array(arrayBuffer),
+                binaryString = String.fromCharCode.apply(null, array);
+            jsonObj = { Content: binaryString, Name: file.name };
+
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Authorization": "bearer " + token
+                },
+                contentType: "application/json; charset=utf-8",
+                url: "https://localhost:44380/Api/FilesUpload/StreamUploadByteArray",
+                xhr: function () {
+                    var xhr = new window.XMLHttpRequest();
+
+                    //Upload progress
+                    xhr.upload.addEventListener("progress", function (evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = (evt.loaded / evt.total) * 100;
+                            //Do something with upload progress
+                            console.log("Upload: %" + percentComplete);
+                        }
+                    }, false);
+                    //Download progress
+                    xhr.addEventListener("progress", function (evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = (evt.loaded / evt.total) * 100;
+                            //Do something with download progress
+                            console.log("Download %" + percentComplete);
+                        }
+                    }, false);
+                    return xhr;
+                },
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (error) {
+                    // handle error
+                },
+                async: true,
+                data: $.param(jsonObj, true),
+                cache: false,
+                contentType: false,
+                processData: true,
+                timeout: 60000
+            });
+
+
+        }
+        reader.readAsArrayBuffer(file);
+        //reader.onloadend = function () {
+        //    var base64Image = btoa(this.result);
+        //}
+    }
+    function getFile(file) {
+        var byteStr = "";
+        for (var i = 0; i < file.length; i++) {
+
+        }
+    }
+    function findColumnLength(file, callback) {
+        // 1 KB at a time, because we expect that the column will probably small.
+        var CHUNK_SIZE = 1024;
+        var offset = 0;
+        var fr = new FileReader();
+        fr.onload = function () {
+            var view = new Uint8Array(fr.result);
+            for (var i = 0; i < view.length; ++i) {
+                if (view[i] === 10 || view[i] === 13) {
+                    // \n = 10 and \r = 13
+                    // column length = offset + position of \r or \n
+                    callback(offset + i);
+                    return;
+                }
+            }
+            // \r or \n not found, continue seeking.
+            offset += CHUNK_SIZE;
+            seek();
+        };
+        fr.onerror = function () {
+            // Cannot read file... Do something, e.g. assume column size = 0.
+            callback(0);
+        };
+        seek();
+
+        function seek() {
+            if (offset >= file.size) {
+                // No \r or \n found. The column size is equal to the full
+                // file size
+                callback(file.size);
+                return;
+            }
+            var slice = file.slice(offset, offset + CHUNK_SIZE);
+            fr.readAsArrayBuffer(slice);
+        }
+    }
+</script>

@@ -1,0 +1,49 @@
+﻿@model IEnumerable<FinansApp.Models.Borclar>
+@{
+    ViewBag.Title = "Borçlar";
+}
+
+<h2>
+    Borçlar
+    @if (TempData["AdiSoyadi"] != null)
+    {
+        @("("+TempData["AdiSoyadi"]+")")
+    }
+</h2>
+<br />
+@Html.ActionLink("Yeni Kayıt", "Kayit", new { MusteriId = ViewData["MusteriId"] }, new { @class = "btn btn-primary" })
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">No</th>
+            <th scope="col">Adı Soyadı</th>
+            <th scope="col">Tarih</th>
+            <th scope="col">Ödenen</th>
+            <th scope="col">Kalan</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int i = 1;
+        }
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td scope="row">@(i++)</td>
+            <td>@item.Musteriler.AdiSoyadi</td>
+            <td>@item.Tarih.Value.ToString("dd.MM.yyyy")</td>
+            <td>@(item.Odenen.Value.ToString()+" ₺")</td>
+            <td>@((item.ToplamBorc.Value-item.Odenen.Value).ToString()+" ₺")</td>
+            <td>@Html.ActionLink("Düzenle", "Kayit", new { MusteriId = item.MusteriId, id = item.Id })</td>
+            <td>@Html.ActionLink("Fatura Kes","Index" ,"Faturalar", new { BorcId = item.Id })</td>
+            <td>@Html.ActionLink("Sil", "Sil", new { id = item.Id })</td>
+        </tr>
+        }
+
+
+    </tbody>
+</table>
+

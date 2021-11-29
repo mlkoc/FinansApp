@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="FinansDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Faturalar">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SatisId" Type="int" />
+    <Property Name="Tarih" Type="date" />
+    <Property Name="Tutar" Type="money" />
+  </EntityType>
+  <EntityType Name="Kullanicilar">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Email" Type="nvarchar" MaxLength="250" />
+    <Property Name="Sifre" Type="nvarchar" MaxLength="250" />
+  </EntityType>
+  <EntityType Name="Musteriler">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="AdiSoyadi" Type="nvarchar" MaxLength="150" />
+    <Property Name="Mail" Type="nvarchar" MaxLength="150" />
+    <Property Name="Telefon" Type="nvarchar" MaxLength="12" />
+    <Property Name="KayitTarihi" Type="date" />
+  </EntityType>
+  <EntityType Name="Satislar">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ToplamBorc" Type="money" />
+    <Property Name="Odenen" Type="money" />
+    <Property Name="Tarih" Type="date" />
+    <Property Name="MusteriId" Type="int" />
+  </EntityType>
+  <EntityType Name="Urunler">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Ad" Type="nvarchar" MaxLength="250" />
+    <Property Name="Fiyat" Type="money" />
+  </EntityType>
+  <EntityType Name="UrunSatis">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UrunId" Type="int" />
+    <Property Name="SatisId" Type="int" />
+    <Property Name="Adet" Type="int" />
+    <Property Name="AraToplam" Type="money" />
+  </EntityType>
+  <Association Name="FK_Borclar_Musteriler">
+    <End Role="Musteriler" Type="Self.Musteriler" Multiplicity="0..1" />
+    <End Role="Satislar" Type="Self.Satislar" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Musteriler">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Satislar">
+        <PropertyRef Name="MusteriId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Faturalar_Borclar">
+    <End Role="Satislar" Type="Self.Satislar" Multiplicity="0..1" />
+    <End Role="Faturalar" Type="Self.Faturalar" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Satislar">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Faturalar">
+        <PropertyRef Name="SatisId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UrunSatis_Borclar">
+    <End Role="Satislar" Type="Self.Satislar" Multiplicity="0..1" />
+    <End Role="UrunSatis" Type="Self.UrunSatis" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Satislar">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="UrunSatis">
+        <PropertyRef Name="SatisId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UrunSatis_Urunler">
+    <End Role="Urunler" Type="Self.Urunler" Multiplicity="0..1" />
+    <End Role="UrunSatis" Type="Self.UrunSatis" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Urunler">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="UrunSatis">
+        <PropertyRef Name="UrunId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="FinansDBModelStoreContainer">
+    <EntitySet Name="Faturalar" EntityType="Self.Faturalar" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Kullanicilar" EntityType="Self.Kullanicilar" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Musteriler" EntityType="Self.Musteriler" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Satislar" EntityType="Self.Satislar" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Urunler" EntityType="Self.Urunler" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UrunSatis" EntityType="Self.UrunSatis" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_Borclar_Musteriler" Association="Self.FK_Borclar_Musteriler">
+      <End Role="Musteriler" EntitySet="Musteriler" />
+      <End Role="Satislar" EntitySet="Satislar" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Faturalar_Borclar" Association="Self.FK_Faturalar_Borclar">
+      <End Role="Satislar" EntitySet="Satislar" />
+      <End Role="Faturalar" EntitySet="Faturalar" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UrunSatis_Borclar" Association="Self.FK_UrunSatis_Borclar">
+      <End Role="Satislar" EntitySet="Satislar" />
+      <End Role="UrunSatis" EntitySet="UrunSatis" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UrunSatis_Urunler" Association="Self.FK_UrunSatis_Urunler">
+      <End Role="Urunler" EntitySet="Urunler" />
+      <End Role="UrunSatis" EntitySet="UrunSatis" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

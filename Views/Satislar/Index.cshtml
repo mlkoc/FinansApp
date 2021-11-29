@@ -1,0 +1,153 @@
+﻿@model IEnumerable<FinansApp.Models.Satislar>
+@{
+    ViewBag.Title = "Satışlar";
+}
+
+
+<br />
+@{
+    List<FinansApp.Models.Musteriler> lstMusteri = (List<FinansApp.Models.Musteriler>)TempData["Musteriler"];
+    lstMusteri.Add(new FinansApp.Models.Musteriler() { AdiSoyadi = "Lütfen Müşteri seçiniz", Id = 0 });
+
+}
+
+
+<h2>
+    Arama
+    
+</h2>
+<hr />
+<div class="col-md-12">
+    <div class="col-md-1">
+        <a class="btn btn-primary" onclick="git()"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Bul&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </a>
+    </div>
+    <div class="col-md-3">
+        @Html.DropDownListFor(model => model.FirstOrDefault().MusteriId, new SelectList(lstMusteri.OrderBy(x => x.Id).ToList(), "Id", "AdiSoyadi"), new { @class = "form-control" })
+
+    </div>
+    <div class="col-md-7">
+        @if (TempData["borc"] != null && TempData["borc"].ToString() == "1")
+        {
+            <input type="radio" name="rb" value="1" checked="checked" id="rb1" /><label for="male">Tüm Kayıtlar</label>
+            <input type="radio" name="rb" value="2" id="rb2" /><label for="rb">Borclular</label>
+            <input type="radio" name="rb" value="3" id="rb3" /><label for="rb">Borcu Olmayanlar</label>
+        }
+        else if (TempData["borc"] != null && TempData["borc"].ToString() == "2")
+        {
+            <input type="radio" name="rb" value="1" id="rb1" /><label for="male">Tüm Kayıtlar</label>
+            <input type="radio" name="rb" value="2" checked="checked" id="rb2" /><label for="rb">Borclular</label>
+            <input type="radio" name="rb" value="3" id="rb3" /><label for="rb">Borcu Olmayanlar</label>
+        }
+        else
+        {
+            <input type="radio" name="rb" value="1" id="rb1" /><label for="male">Tüm Kayıtlar</label>
+            <input type="radio" name="rb" value="2"  id="rb2" /><label for="rb">Borclular</label>
+            <input type="radio" name="rb" value="3" checked="checked" id="rb3" /><label for="rb">Borcu Olmayanlar</label>
+        }
+
+    </div>
+</div>
+<br />
+<h2>
+    Satışlar
+    @if (TempData["AdiSoyadi"] != null)
+    {
+        @("("+TempData["AdiSoyadi"]+")")
+    }
+</h2>
+<hr />
+@if (ViewData["MusteriId"] != null)
+{
+    <div class="col-md-12">
+        <div class="col-md-2">
+            @Html.ActionLink("Yeni Satış", "Kayit", new { MusteriId = ViewData["MusteriId"] }, new { @class = "btn btn-primary" })
+        </div>
+
+
+    </div>
+
+}
+
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">No</th>
+            <th scope="col">Adı Soyadı</th>
+            <th scope="col">Tarih</th>
+            <th scope="col">Toplam Tutar</th>
+            <th scope="col">Ödenen</th>
+            <th scope="col">Kalan</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int i = 1;
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td scope="row">@(i++)</td>
+                <td>@item.Musteriler.AdiSoyadi</td>
+                <td>@item.Tarih.Value.ToString("dd.MM.yyyy")</td>,
+                <td><span class="bg-warning">@(item.ToplamBorc!= null?item.ToplamBorc.Value.ToString()+" ₺":"0"+" ₺")</span></td>
+                <td><span class="bg-success">@(item.Odenen.Value.ToString()+" ₺")</span></td>
+                <td><span class="bg-danger">@((item.ToplamBorc != null ? (item.ToplamBorc.Value - item.Odenen.Value)+"":"0").ToString()+" ₺")</span> </td>
+                <td>@Html.ActionLink("Satış Detayı", "Satis", new { SatisId = item.Id })</td>
+                <td>
+                    @if ((item.Faturalar == null || item.Faturalar.Count == 0) && item.ToplamBorc == item.Odenen && item.Odenen != 0)
+                    {
+                        @Html.ActionLink("Fatura Kes", "FaturaKes", "Faturalar", new { MusteriId = item.MusteriId, SatisId = item.Id }, new { })
+                    }
+                    else if ((item.Faturalar != null && item.Faturalar.Count > 0))
+                    {
+                        @Html.ActionLink("Faturayı Gör", "FaturaDetay", "Faturalar", new { id = item.Faturalar.FirstOrDefault().Id }, new { })
+                    }
+                    else
+                    {
+                        <span class="alert-danger">Ödeme Tamamlanmamış</span>
+                    }
+
+                </td>
+                <td>
+                    @Html.ActionLink("Sil", "Sil", new { id = item.Id, MusteriId = item.MusteriId })
+                </td>
+            </tr>
+        }
+
+
+    </tbody>
+</table>
+<input type="hidden" name="sonuc" id="sonuc" value="@TempData["sonuc"]" />
+<input type="hidden" name="hata" id="hata" value="@TempData["hata"]" />
+<script type="text/javascript">
+    function git() {
+        var mId = $("#MusteriId").val();
+        if (mId != "" && mId != undefined && mId != null && mId != "0") {
+            window.location = "/Satislar/Index?MusteriId=" + $("#MusteriId").val() +"&tum1Borc2=" + $('input[name="rb"]:checked').val();
+        }
+        else {
+            window.location = "/Satislar/Index?MusteriId=0&tum1Borc2=" + $('input[name="rb"]:checked').val();
+        }
+
+    }
+    $(document).ready(function () {
+        var mesaj = $("#sonuc").val();
+        var hata = $("#hata").val();
+        if (mesaj != "") {
+            $("#titleMessageBoxModal").html("Ödeme İşlemi");
+            $("#pMessageBoxModal").html(mesaj);
+            $("#MessageBoxModal").modal();
+        }
+        else if (hata != "") {
+            $("#titleMessageBoxModal").html("Bir Hata Meydana Geldi");
+            $("#pMessageBoxModal").html(hata);
+            $("#MessageBoxModal").modal();
+        }
+
+    });
+</script>
+
